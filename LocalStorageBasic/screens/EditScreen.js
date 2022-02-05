@@ -1,8 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {Box, Button, Input} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import screens from '../config/screens';
+import {SeasonContext} from '../context/SeasonContextProvider';
+import {TOGGLE_REFRESH} from '../actions/seasonActions';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,6 +32,7 @@ const emptySeason = {
 
 function EditScreen({navigation, route}) {
   const [season, setSeason] = useState(emptySeason);
+  const {dispatch} = useContext(SeasonContext);
 
   useEffect(() => {
     const {season: data} = route.params;
@@ -50,6 +53,7 @@ function EditScreen({navigation, route}) {
         await AsyncStorage.setItem('@season_list', JSON.stringify(tempList));
       }
 
+      dispatch({type: TOGGLE_REFRESH});
       setSeason(emptySeason);
       navigation.navigate(screens.home);
     } catch (error) {

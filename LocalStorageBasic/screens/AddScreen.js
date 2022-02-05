@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {Box, Button, Input} from 'native-base';
 import shortid from 'shortid';
 import AsyncStorage from '@react-native-community/async-storage';
 import screens from '../config/screens';
+import {SeasonContext} from '../context/SeasonContextProvider';
+import {TOGGLE_REFRESH} from '../actions/seasonActions';
 
 const styles = StyleSheet.create({
   container: {
@@ -25,6 +27,7 @@ const styles = StyleSheet.create({
 function AddScreen({navigation}) {
   const [totalSeason, setTotalSeason] = useState('');
   const [name, setName] = useState('');
+  const {dispatch} = useContext(SeasonContext);
 
   const addToList = async () => {
     try {
@@ -49,6 +52,8 @@ function AddScreen({navigation}) {
         prevList.push(seasonToAdd);
         await AsyncStorage.setItem('@season_list', JSON.stringify(prevList));
       }
+
+      dispatch({type: TOGGLE_REFRESH});
       setName('');
       setTotalSeason('');
       navigation.navigate(screens.home);

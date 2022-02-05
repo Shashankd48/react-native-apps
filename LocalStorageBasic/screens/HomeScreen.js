@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Fab, Box, AddIcon} from 'native-base';
 import screens from '../config/screens';
@@ -7,6 +7,8 @@ import {useIsFocused} from '@react-navigation/native';
 import Loading from '../components/Loading';
 import NoWatchList from '../components/NoWatchList';
 import Watchlist from '../components/Watchlist';
+import {SeasonContext} from '../context/SeasonContextProvider';
+import {TOGGLE_REFRESH} from '../actions/seasonActions';
 
 const styles = StyleSheet.create({
   emptyContainer: {
@@ -41,11 +43,20 @@ const styles = StyleSheet.create({
 function HomeScreen({navigation, route}) {
   const [seasons, setSeasons] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const isFocused = useIsFocused();
+  const {refreshScreen, dispatch} = useContext(SeasonContext);
 
   useEffect(() => {
     getSeasonsList();
-  }, [isFocused]);
+    return;
+  }, []);
+
+  useEffect(() => {
+    if (refreshScreen) {
+      dispatch({type: TOGGLE_REFRESH});
+      getSeasonsList();
+      return;
+    }
+  }, [refreshScreen == true]);
 
   const getSeasonsList = async () => {
     setIsLoading(true);
