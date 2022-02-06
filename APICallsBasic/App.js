@@ -20,6 +20,8 @@ import {
 import Card from './components/Card';
 import UserList from './components/UserList';
 import HomeScreen from './screens/HomeScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import HeaderTitle from './components/HeaderTitle';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 const styles = StyleSheet.create({
@@ -36,7 +38,7 @@ const App = () => {
 
   const navigationOption = {
     headerStyle: {
-      backgroundColor: '#0f4c75',
+      backgroundColor: '#fff',
       paddingHorizontal: 0,
     },
     headerTitleAlign: 'center',
@@ -51,7 +53,20 @@ const App = () => {
             <Stack.Screen
               name="Home"
               component={HomeScreen}
-              options={{...navigationOption}}
+              options={{
+                ...navigationOption,
+                headerTitle: props => <HeaderTitle {...props} title="Home" />,
+              }}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{
+                ...navigationOption,
+                headerTitle: props => (
+                  <HeaderTitle {...props} title="Profile" />
+                ),
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>
