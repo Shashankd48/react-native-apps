@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {View, useToast, Box, Heading} from 'native-base';
 import UserList from '../components/UserList';
 import axios from 'axios';
@@ -6,6 +6,8 @@ import moment from 'moment';
 import {RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
 import Loading from '../components/Loading';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {ConnectionLive, ConnectionOffline} from '../components/Toasts';
+import NoInternet from '../components/NoInternet';
 
 export function getRandomUsers(resultCount) {
   let request = axios.get(`https://randomuser.me/api/?results=${resultCount}`);
@@ -17,22 +19,6 @@ export function getRandomUsers(resultCount) {
       return error.response.data;
     });
 }
-
-const ConnectionLive = () => {
-  return (
-    <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
-      Back to online
-    </Box>
-  );
-};
-
-const ConnectionOffline = () => {
-  return (
-    <Box bg="danger.500" px="2" py="1" rounded="sm" mb={5}>
-      No internet!
-    </Box>
-  );
-};
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -107,9 +93,8 @@ function HomeScreen() {
         render: netInfo.isConnected
           ? () => ConnectionLive()
           : () => ConnectionOffline(),
-        duration: 1500,
+        duration: 2000,
       });
-      console.log('log: ', netInfo.isConnected);
     }
 
     return;
@@ -122,23 +107,18 @@ function HomeScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        {isLoading && !error && netInfo.isConnected == false ? (
-          <Loading />
+        {isLoading && !error ? (
+          <Fragment>
+            <Loading />
+          </Fragment>
         ) : (
-          <UserList users={users} />
-        )}
-
-        {netInfo.isConnected == false && error && (
-          <Box
-            height="80%"
-            justifyContent="center"
-            alignItems="center"
-            flexDirection="column">
-            <Heading>No Internet!</Heading>
-            <Text style={{color: '#282828', fontSize: 16, textAlign: 'center'}}>
-              Please connect to internet and pull to refresh.
-            </Text>
-          </Box>
+          <Fragment>
+            {netInfo.isConnected == false && error ? (
+              <NoInternet />
+            ) : (
+              <UserList users={users} />
+            )}
+          </Fragment>
         )}
       </ScrollView>
     </View>
