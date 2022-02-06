@@ -1,15 +1,17 @@
 import {View, Text} from 'native-base';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import Loading from '../components/Loading';
+import ProfileCard from '../components/ProfileCard';
 
 const ProfileScreen = ({route}) => {
-  const [profile, setProfile] = useState(route.params?.profile);
+  const [profile, setProfile] = useState();
 
-  console.log(profile);
+  useEffect(() => {
+    if (route.params?.profile) setProfile(route.params?.profile);
+  }, []);
 
   return (
-    <View>
-      <Text>{profile.name}</Text>
-    </View>
+    <View>{profile ? <ProfileCard profile={profile} /> : <Loading />}</View>
   );
 };
 
