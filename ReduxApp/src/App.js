@@ -15,10 +15,11 @@ import {
   StyleSheet,
   useColorScheme,
 } from 'react-native';
-
 import HomeScreen from './screens/HomeScreen';
 import AddScreen from './screens/AddScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Provider} from 'react-redux';
+import store from './store';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,29 +42,31 @@ const App = () => {
   };
 
   return (
-    <NativeBaseProvider>
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{
-                ...navigationOption,
-              }}
-            />
-            <Stack.Screen
-              name="Add"
-              component={AddScreen}
-              options={{
-                ...navigationOption,
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
-    </NativeBaseProvider>
+    <Provider store={store}>
+      <NativeBaseProvider>
+        <SafeAreaView style={styles.container}>
+          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="Home">
+              <Stack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                  ...navigationOption,
+                }}
+              />
+              <Stack.Screen
+                name="Add"
+                component={AddScreen}
+                options={{
+                  ...navigationOption,
+                }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaView>
+      </NativeBaseProvider>
+    </Provider>
   );
 };
 
