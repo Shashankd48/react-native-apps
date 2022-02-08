@@ -14,6 +14,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 import screens from '../config/screens';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import {addTodo} from '../actions/todoActions';
+import config from '../config';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,20 +34,40 @@ const styles = StyleSheet.create({
   },
 });
 
+const emptyTask = {
+  title: '',
+  description: '',
+  dueDate: '',
+};
+
 function AddScreen({navigation}) {
-  const [totalSeason, setTotalSeason] = useState('');
-  const [name, setName] = useState('');
-  const [task, setTask] = useState({
-    title: '',
-    description: '',
-    dueDate: null,
-  });
+  const [task, setTask] = useState(emptyTask);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const addToList = async () => {
     try {
-      console.log(task);
-      return;
+      if (task.title === '' || task.dueDate === '')
+        return alert('Please add title and due date!');
+
+      const taskToAdd = {...task, id: shortid.generate(), isCompleted: false};
+
+      console.log(taskToAdd);
+
+      const storedValues = await AsyncStorage.getItem(config.store);
+      const prevList = await JSON.parse(storedValues);
+
+      console.log(prevList);
+
+      if (!prevList) {
+        const newList = [taskToAdd];
+        await AsyncStorage.setItem(config.store, JSON.stringify(newList));
+      } else {
+        prevList.push(taskToAdd);
+        await AsyncStorage.setItem(config.store, JSON.stringify(prevList));
+      }
+
+      setTask(emptyTask);
+      navigation.navigate(screens.home);
     } catch (error) {
       console.log(error);
     }
@@ -84,7 +106,7 @@ function AddScreen({navigation}) {
               <TextArea
                 placeholder="Please describe you task..."
                 numberOfLines={6}
-                height={200}
+                height={160}
                 value={task.description}
                 onChangeText={text => setTask({...task, description: text})}
                 fontSize="md"
@@ -92,7 +114,7 @@ function AddScreen({navigation}) {
             </FormControl>
           </Box>
           <Box alignItems="center" mb={3}>
-            <FormControl isInvalid={false} w="100%">
+            <FormControl isInvalid={false} w="100%" isRequired>
               <FormControl.Label>
                 <Text fontSize="lg" fontWeight={500}>
                   Due Date
