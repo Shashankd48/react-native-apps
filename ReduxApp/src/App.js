@@ -20,6 +20,7 @@ import AddScreen from './screens/AddScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Provider} from 'react-redux';
 import store from './store';
+import screens from './config/screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -47,16 +48,16 @@ const App = () => {
         <SafeAreaView style={styles.container}>
           <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home">
+            <Stack.Navigator initialRouteName={screens.add}>
               <Stack.Screen
-                name="Home"
+                name={screens.home}
                 component={HomeScreen}
                 options={{
                   ...navigationOption,
                 }}
               />
               <Stack.Screen
-                name="Add"
+                name={screens.add}
                 component={AddScreen}
                 options={{
                   ...navigationOption,
