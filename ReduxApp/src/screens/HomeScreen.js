@@ -1,11 +1,22 @@
 import React, {useEffect} from 'react';
-import {View, Text, Fab, AddIcon} from 'native-base';
+import {
+  View,
+  Text,
+  Fab,
+  AddIcon,
+  HStack,
+  Center,
+  VStack,
+  Heading,
+  ScrollView,
+} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import config from '../config';
 import {StyleSheet} from 'react-native';
 import screens from '../config/screens';
 import {useDispatch, useSelector} from 'react-redux';
-import {addTodo, storeTodo} from '../actions/todoActions';
+import {storeTodo} from '../actions/todoActions';
+import moment from 'moment';
 
 const styles = StyleSheet.create({
   emptyContainer: {
@@ -37,28 +48,45 @@ const styles = StyleSheet.create({
   },
 });
 
+const TodoCard = ({todo}) => {
+  return (
+    <HStack borderColor="gray.200" borderWidth={1} rounded="sm" my={1}>
+      <View h="100%" w="1" bg="yellow.400" />
+      <VStack px={2} py={3}>
+        <Heading size="md">{todo.title}</Heading>
+        <Text fontSize="md" mt={1}>
+          {todo.description}
+        </Text>
+        <Text fontSize="sm" fontWeight={500} mt={1}>
+          Due date {moment(todo.dueDate).calendar()}
+        </Text>
+        <View></View>
+      </VStack>
+    </HStack>
+  );
+};
+
 const HomeScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const todos = useSelector(state => state.todos);
 
-  const getAllTask = async () => {
-    const storedValues = await AsyncStorage.getItem(config.store);
-    const prevList = await JSON.parse(storedValues);
-    dispatch(storeTodo(prevList));
-  };
-
   useEffect(() => {
-    if (todos.length <= 0) return getAllTask();
+    const getAllTask = async () => {
+      const storedValues = await AsyncStorage.getItem(config.store);
+      const prevList = await JSON.parse(storedValues);
+      dispatch(storeTodo(prevList.reverse()));
+    };
+    if (todos.length <= 0) getAllTask();
   }, [dispatch]);
 
   return (
     <View style={styles.container}>
-      <View height={400}>
-        {todos.map(todo => (
-          <Text color="#000" key={todo.id}>
-            {todo.title}
-          </Text>
-        ))}
+      <View padding={1} rounded="sm">
+        <ScrollView>
+          {todos.map(todo => (
+            <TodoCard todo={todo} key={todo.id} />
+          ))}
+        </ScrollView>
       </View>
 
       <Fab
