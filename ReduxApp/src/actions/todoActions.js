@@ -1,4 +1,9 @@
-import {ADD_TODO, TOGGLE_COMPLETE_TODO, REMOVE_TODO} from './action.types';
+import {
+  ADD_TODO,
+  TOGGLE_COMPLETE_TODO,
+  REMOVE_TODO,
+  STORE_TODO,
+} from './action.types';
 
 export const addTodo = todo => ({type: ADD_TODO, payload: todo});
 
@@ -8,3 +13,5 @@ export const toggleCompleteTodo = id => ({
   type: TOGGLE_COMPLETE_TODO,
   payload: id,
 });
+
+export const storeTodo = todos => ({type: STORE_TODO, payload: todos});

@@ -16,6 +16,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import {addTodo} from '../actions/todoActions';
 import config from '../config';
+import {useDispatch} from 'react-redux';
 
 const styles = StyleSheet.create({
   container: {
@@ -43,6 +44,7 @@ const emptyTask = {
 function AddScreen({navigation}) {
   const [task, setTask] = useState(emptyTask);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const dispatch = useDispatch();
 
   const addToList = async () => {
     try {
@@ -57,6 +59,8 @@ function AddScreen({navigation}) {
       const prevList = await JSON.parse(storedValues);
 
       console.log(prevList);
+      // TODO: Add todo in store
+      dispatch(addTodo(taskToAdd));
 
       if (!prevList) {
         const newList = [taskToAdd];

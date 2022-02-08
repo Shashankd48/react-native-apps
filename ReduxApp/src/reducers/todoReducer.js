@@ -2,6 +2,7 @@ import {
   ADD_TODO,
   TOGGLE_COMPLETE_TODO,
   REMOVE_TODO,
+  STORE_TODO,
 } from '../actions/action.types';
 
 const initialState = [];
@@ -19,6 +20,8 @@ export default (state = initialState, action) => {
         if (item.id === action.payload) item.isCompleted = !item.isCompleted;
         return item;
       });
+    case STORE_TODO:
+      return action.payload;
 
     default:
       return state;
