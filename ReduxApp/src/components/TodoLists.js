@@ -119,6 +119,10 @@ const TodoLists = () => {
         previewOpenValue={-40}
         previewOpenDelay={3000}
         onRowDidOpen={onRowDidOpen}
+        useFlatList
+        keyExtractor={(rowData, index) => {
+          return rowData.id.toString();
+        }}
       />
     </Box>
   );
