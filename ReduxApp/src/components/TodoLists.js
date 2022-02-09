@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Box, Pressable, HStack, VStack, Text, Icon} from 'native-base';
 import {SwipeListView} from 'react-native-swipe-list-view';
-import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import TodoCard from './TodoCard';
@@ -14,20 +13,18 @@ const TodoLists = () => {
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
-      console.log(rowMap);
       rowMap[rowKey].closeRow();
     }
   };
 
   const toggleTodo = (rowMap, rowKey) => {
-    console.log(rowMap);
     closeRow(rowMap, rowKey);
     dispatch(toggleCompleteTodo(rowKey));
   };
 
   const deleteRow = (rowMap, rowKey) => {
     closeRow(rowMap, rowKey);
-    // dispatch(removeTodo(rowKey));
+    dispatch(removeTodo(rowKey));
   };
 
   const onRowDidOpen = rowKey => {

@@ -43,7 +43,7 @@ const emptyTask = {
 
 function AddScreen({navigation}) {
   const [task, setTask] = useState(emptyTask);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(true);
   const dispatch = useDispatch();
 
   const addToList = async () => {
@@ -126,10 +126,8 @@ function AddScreen({navigation}) {
               </FormControl.Label>
               <Input
                 type="text"
-                onFocus={() => setShowDatePicker(true)}
-                value={
-                  task.dueDate ? moment(task.dueDate).format('MMM Do YYYY') : ''
-                }
+                // onFocus={() => setShowDatePicker(true)}
+                value={task.dueDate ? moment(task.dueDate).format('lll') : ''}
                 onChangeText={() => setShowDatePicker(true)}
                 fontSize="md"
               />
@@ -137,10 +135,11 @@ function AddScreen({navigation}) {
                 <DateTimePicker
                   testID="dateTimePicker"
                   value={task.dueDate || new Date()}
-                  mode={showDatePicker}
+                  mode="time"
                   is24Hour={true}
                   display="default"
                   onChange={(e, selectedDate) => {
+                    console.log(selectedDate);
                     setTask({...task, dueDate: selectedDate});
                     setShowDatePicker(false);
                   }}
