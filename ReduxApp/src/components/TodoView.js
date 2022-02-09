@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Box, Center, Heading} from 'native-base';
+import React from 'react';
+import {Box, Center, Heading, Text} from 'native-base';
 import TodoLists from './TodoLists';
 
 function TodoView() {
@@ -14,11 +14,12 @@ function TodoView() {
         }}
         flex="1"
         safeAreaTop
-        maxW="400px"
         w="98%">
-        <Heading p="4" pb="3" size="lg">
-          You Tasks
-        </Heading>
+        <Box p="4" pb="3">
+          <Heading>You Tasks</Heading>
+          <Text fontSize="md">Swipe right for actions.</Text>
+        </Box>
+
         <TodoLists />
       </Box>
     </Center>

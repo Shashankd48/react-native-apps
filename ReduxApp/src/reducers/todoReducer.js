@@ -4,6 +4,8 @@ import {
   REMOVE_TODO,
   STORE_TODO,
 } from '../actions/action.types';
+import AsyncStorage from '@react-native-community/async-storage';
+import config from '../config';
 
 const initialState = [];
 
@@ -16,10 +18,13 @@ export default (state = initialState, action) => {
       return state.filter(item => item.id !== action.payload);
 
     case TOGGLE_COMPLETE_TODO:
-      return state.map(item => {
+      const newState = state.map(item => {
         if (item.id === action.payload) item.isCompleted = !item.isCompleted;
         return item;
       });
+      AsyncStorage.setItem(config.store, JSON.stringify(newState));
+
+      return newState;
     case STORE_TODO:
       return action.payload;
 

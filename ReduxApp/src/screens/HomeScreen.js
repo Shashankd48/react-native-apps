@@ -1,15 +1,5 @@
 import React, {useEffect} from 'react';
-import {
-  View,
-  Text,
-  Fab,
-  AddIcon,
-  HStack,
-  Center,
-  VStack,
-  Heading,
-  ScrollView,
-} from 'native-base';
+import {View, Fab, AddIcon} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import config from '../config';
 import {StyleSheet} from 'react-native';
@@ -17,6 +7,7 @@ import screens from '../config/screens';
 import {useDispatch, useSelector} from 'react-redux';
 import {storeTodo} from '../actions/todoActions';
 import TodoView from '../components/TodoView';
+import Example from '../components/Example';
 
 const styles = StyleSheet.create({
   emptyContainer: {
@@ -56,7 +47,7 @@ const HomeScreen = ({navigation}) => {
     const getAllTask = async () => {
       const storedValues = await AsyncStorage.getItem(config.store);
       const prevList = await JSON.parse(storedValues);
-      dispatch(storeTodo(prevList.reverse()));
+      dispatch(storeTodo(prevList));
     };
     if (todos.length <= 0) getAllTask();
   }, [dispatch]);
