@@ -1,12 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Keyboard,
-  TouchableOpacity,
-  Pressable,
-} from 'react-native';
+import {View, StyleSheet, ScrollView, Pressable} from 'react-native';
 import {
   Box,
   Text,
@@ -26,7 +19,6 @@ import moment from 'moment';
 import {addTodo} from '../actions/todoActions';
 import config from '../config';
 import {useDispatch} from 'react-redux';
-import HomeScreen from './HomeScreen';
 
 const styles = StyleSheet.create({
   container: {
@@ -67,12 +59,8 @@ function AddScreen({navigation}) {
 
       const taskToAdd = {...task, id: shortid.generate(), isCompleted: false};
 
-      console.log(taskToAdd);
-
       const storedValues = await AsyncStorage.getItem(config.store);
       const prevList = await JSON.parse(storedValues);
-
-      console.log(prevList);
 
       dispatch(addTodo(taskToAdd));
 
@@ -91,9 +79,26 @@ function AddScreen({navigation}) {
     }
   };
 
-  const yesterday = moment().subtract(1, 'day');
-  const disablePastDt = current => {
-    return current.isAfter(yesterday);
+  const handleTime = selectedDate => {
+    setShowDateTimeModal({...showDateTimeModal, time: false});
+
+    try {
+      if (task.dueDate) {
+        const time = selectedDate.toString().substr(16, task.dueDate.length);
+        const date = task.dueDate.toString().substring(0, 16);
+
+        setTask({...task, dueDate: new Date(date + time)});
+      } else {
+        setTask({...task, dueDate: selectedDate});
+      }
+    } catch (error) {
+      setTask({...task, dueDate: new Date()});
+    }
+  };
+
+  const handleDate = selectedDate => {
+    setShowDateTimeModal({...showDateTimeModal, date: false});
+    setTask({...task, dueDate: selectedDate});
   };
 
   return (
@@ -192,15 +197,11 @@ function AddScreen({navigation}) {
                 testID="datePicker"
                 value={task.dueDate || new Date()}
                 mode="date"
-                onChange={(e, selectedDate) => {
-                  console.log(selectedDate);
-                  setShowDateTimeModal({...showDateTimeModal, date: false});
-                  setTask({...task, dueDate: selectedDate});
-                }}
+                onChange={(e, selectedDate) => handleDate(selectedDate)}
                 onTouchCancel={() =>
                   setShowDateTimeModal({...showDateTimeModal, date: false})
                 }
-                isVisible={showDateTimeModal.time}
+                isVisible={showDateTimeModal.date}
                 display="spinner"
                 minimumDate={new Date()}
               />
@@ -210,14 +211,11 @@ function AddScreen({navigation}) {
                 testID="timePicker"
                 value={task.dueDate || new Date()}
                 mode="time"
-                onChange={(e, selectedDate) => {
-                  console.log(selectedDate);
-                  setShowDateTimeModal({...showDateTimeModal, time: false});
-                  setTask({...task, time: selectedDate});
-                }}
+                onChange={(e, selectedDate) => handleTime(selectedDate)}
                 onTouchCancel={() =>
                   setShowDateTimeModal({...showDateTimeModal, time: false})
                 }
+                isVisible={showDateTimeModal.time}
                 display="spinner"
               />
             )}
