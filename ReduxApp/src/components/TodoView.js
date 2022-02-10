@@ -4,7 +4,7 @@ import TodoLists from './TodoLists';
 
 function TodoView() {
   return (
-    <Center h="100%">
+    <Center h="95%">
       <Box
         _dark={{
           bg: 'coolGray.800',
@@ -14,7 +14,8 @@ function TodoView() {
         }}
         flex="1"
         safeAreaTop
-        w="98%">
+        w="98%"
+        rounded="sm">
         <Box p="4" pb="3">
           <Heading>You Tasks</Heading>
           <Text fontSize="md">Swipe right for actions.</Text>

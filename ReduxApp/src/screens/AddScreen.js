@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {View, StyleSheet, ScrollView, Pressable} from 'react-native';
 import {
   Box,
@@ -19,6 +19,7 @@ import moment from 'moment';
 import {addTodo} from '../actions/todoActions';
 import config from '../config';
 import {useDispatch} from 'react-redux';
+import {useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   container: {
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
 });
 
 const emptyTask = {
+  id: null,
   title: '',
   description: '',
   dueDate: '',
@@ -51,6 +53,17 @@ function AddScreen({navigation}) {
     time: false,
   });
   const dispatch = useDispatch();
+  const route = useRoute();
+  const focused = useIsFocused();
+
+  useEffect(() => {
+    if (route.params) {
+      const {task: data} = route.params;
+      console.log('todo: ', data);
+
+      if (data) setTask(data);
+    }
+  }, [focused]);
 
   const addToList = async () => {
     try {

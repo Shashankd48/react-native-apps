@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {HStack, VStack, View, Text, Heading} from 'native-base';
 import moment from 'moment';
 

@@ -6,10 +6,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import TodoCard from './TodoCard';
 import {useDispatch, useSelector} from 'react-redux';
 import {removeTodo, toggleCompleteTodo} from '../actions/todoActions';
+import {useNavigation} from '@react-navigation/native';
+import screens from '../config/screens';
 
 const TodoLists = () => {
   const todos = useSelector(state => state.todos);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -34,7 +37,7 @@ const TodoLists = () => {
   const renderItem = ({item, index}) => (
     <Box>
       <Pressable
-        onPress={() => console.log('You touched me')}
+        onPress={() => navigation.navigate(screens.add, {task: item})}
         _dark={{
           bg: 'coolGray.800',
         }}
