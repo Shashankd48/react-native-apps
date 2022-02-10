@@ -48,7 +48,7 @@ const App = () => {
         <SafeAreaView style={styles.container}>
           <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
           <NavigationContainer>
-            <Stack.Navigator initialRouteName={screens.home}>
+            <Stack.Navigator initialRouteName={screens.add}>
               <Stack.Screen
                 name={screens.home}
                 component={HomeScreen}

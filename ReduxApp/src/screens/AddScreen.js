@@ -1,5 +1,12 @@
 import React, {useContext, useState} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Keyboard,
+  TouchableOpacity,
+  Pressable,
+} from 'react-native';
 import {
   Box,
   Text,
@@ -8,6 +15,8 @@ import {
   FormControl,
   TextArea,
   Heading,
+  VStack,
+  HStack,
 } from 'native-base';
 import shortid from 'shortid';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -17,6 +26,7 @@ import moment from 'moment';
 import {addTodo} from '../actions/todoActions';
 import config from '../config';
 import {useDispatch} from 'react-redux';
+import HomeScreen from './HomeScreen';
 
 const styles = StyleSheet.create({
   container: {
@@ -39,11 +49,15 @@ const emptyTask = {
   title: '',
   description: '',
   dueDate: '',
+  time: '',
 };
 
 function AddScreen({navigation}) {
   const [task, setTask] = useState(emptyTask);
-  const [showDatePicker, setShowDatePicker] = useState(true);
+  const [showDateTimeModal, setShowDateTimeModal] = useState({
+    date: false,
+    time: false,
+  });
   const dispatch = useDispatch();
 
   const addToList = async () => {
@@ -59,7 +73,7 @@ function AddScreen({navigation}) {
       const prevList = await JSON.parse(storedValues);
 
       console.log(prevList);
-      // TODO: Add todo in store
+
       dispatch(addTodo(taskToAdd));
 
       if (!prevList) {
@@ -75,6 +89,11 @@ function AddScreen({navigation}) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const yesterday = moment().subtract(1, 'day');
+  const disablePastDt = current => {
+    return current.isAfter(yesterday);
   };
 
   return (
@@ -124,29 +143,84 @@ function AddScreen({navigation}) {
                   Due Date
                 </Text>
               </FormControl.Label>
-              <Input
-                type="text"
-                // onFocus={() => setShowDatePicker(true)}
-                value={task.dueDate ? moment(task.dueDate).format('lll') : ''}
-                onChangeText={() => setShowDatePicker(true)}
-                fontSize="md"
-              />
-              {showDatePicker && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={task.dueDate || new Date()}
-                  mode="time"
-                  is24Hour={true}
-                  display="default"
-                  onChange={(e, selectedDate) => {
-                    console.log(selectedDate);
-                    setTask({...task, dueDate: selectedDate});
-                    setShowDatePicker(false);
-                  }}
-                  onTouchCancel={() => setShowDatePicker(false)}
-                />
-              )}
+              <HStack>
+                <Box w="50%">
+                  <Pressable
+                    onPress={() =>
+                      setShowDateTimeModal({
+                        ...showDateTimeModal,
+                        date: true,
+                      })
+                    }>
+                    <Input
+                      type="text"
+                      value={
+                        task.dueDate ? moment(task.dueDate).format('ll') : ''
+                      }
+                      editable={false}
+                      fontSize="md"
+                      placeholder="Date"
+                    />
+                  </Pressable>
+                </Box>
+                <Box pl={2} w="50%">
+                  <Pressable
+                    onPress={() =>
+                      setShowDateTimeModal({
+                        ...showDateTimeModal,
+                        time: true,
+                      })
+                    }>
+                    <Input
+                      type="text"
+                      value={
+                        task.dueDate ? moment(task.dueDate).format('LT') : ''
+                      }
+                      editable={false}
+                      fontSize="md"
+                      placeholder="Time"
+                    />
+                  </Pressable>
+                </Box>
+              </HStack>
             </FormControl>
+          </Box>
+
+          <Box mb={2}>
+            {showDateTimeModal.date && (
+              <DateTimePicker
+                testID="datePicker"
+                value={task.dueDate || new Date()}
+                mode="date"
+                onChange={(e, selectedDate) => {
+                  console.log(selectedDate);
+                  setShowDateTimeModal({...showDateTimeModal, date: false});
+                  setTask({...task, dueDate: selectedDate});
+                }}
+                onTouchCancel={() =>
+                  setShowDateTimeModal({...showDateTimeModal, date: false})
+                }
+                isVisible={showDateTimeModal.time}
+                display="spinner"
+                minimumDate={new Date()}
+              />
+            )}
+            {showDateTimeModal.time && (
+              <DateTimePicker
+                testID="timePicker"
+                value={task.dueDate || new Date()}
+                mode="time"
+                onChange={(e, selectedDate) => {
+                  console.log(selectedDate);
+                  setShowDateTimeModal({...showDateTimeModal, time: false});
+                  setTask({...task, time: selectedDate});
+                }}
+                onTouchCancel={() =>
+                  setShowDateTimeModal({...showDateTimeModal, time: false})
+                }
+                display="spinner"
+              />
+            )}
           </Box>
 
           <Box>
