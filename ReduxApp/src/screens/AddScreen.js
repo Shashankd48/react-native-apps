@@ -19,7 +19,7 @@ import moment from 'moment';
 import {addTodo, updateTodo} from '../actions/todoActions';
 import config from '../config';
 import {useDispatch} from 'react-redux';
-import {useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
+import {useRoute, useIsFocused} from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   container: {
@@ -58,7 +58,7 @@ function AddScreen({navigation}) {
   useEffect(() => {
     if (route.params) {
       const {task: data} = route.params;
-      console.log('todo: ', data);
+      navigation.setOptions({title: 'Update Task'});
 
       if (data) setTask(data);
     }
@@ -117,10 +117,7 @@ function AddScreen({navigation}) {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        <Heading alignSelf="center" my="5">
-          {task.id ? 'Update Task' : 'Create New Task'}
-        </Heading>
-        <Box px={5}>
+        <Box p={5}>
           <Box alignItems="center" mb={3}>
             <FormControl isInvalid={false} w="100%" isRequired>
               <FormControl.Label>

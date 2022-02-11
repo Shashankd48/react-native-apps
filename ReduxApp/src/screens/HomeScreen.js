@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Fab, AddIcon} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import config from '../config';
@@ -7,7 +7,6 @@ import screens from '../config/screens';
 import {useDispatch, useSelector} from 'react-redux';
 import {storeTodo} from '../actions/todoActions';
 import TodoView from '../components/TodoView';
-import Example from '../components/Example';
 
 const styles = StyleSheet.create({
   emptyContainer: {
@@ -42,6 +41,7 @@ const styles = StyleSheet.create({
 const HomeScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const todos = useSelector(state => state.todos);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getAllTask = async () => {

@@ -11,9 +11,11 @@ const TodoCard = ({todo}) => {
 
   return (
     <HStack borderColor="gray.200" borderWidth={1} rounded="sm" my={2}>
-      <View h="100%" w="1" bg={findColor(todo)} />
-      <VStack px={2} py={3}>
-        <Heading size="md">{todo.title}</Heading>
+      <View h="100%" w="1" bg={findColor(todo)} rounded="sm" />
+      <VStack p={2}>
+        <Heading size="md" isTruncated maxW="400" w="85%">
+          {todo.title}
+        </Heading>
         <Text fontSize="md" mt={1} isTruncated maxW="400" w="85%">
           {todo.description}
         </Text>

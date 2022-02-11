@@ -39,7 +39,7 @@ const App = () => {
       backgroundColor: '#fff',
       paddingHorizontal: 0,
     },
-    headerTitleAlign: 'center',
+    headerTitleAlign: 'left',
   };
 
   return (
@@ -54,6 +54,7 @@ const App = () => {
                 component={HomeScreen}
                 options={{
                   ...navigationOption,
+                  title: 'Your Tasks',
                 }}
               />
               <Stack.Screen
@@ -61,6 +62,7 @@ const App = () => {
                 component={AddScreen}
                 options={{
                   ...navigationOption,
+                  title: 'Create New Task',
                 }}
               />
             </Stack.Navigator>

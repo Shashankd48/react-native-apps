@@ -34,14 +34,16 @@ const TodoLists = () => {
     console.log('This row opened', rowKey);
   };
 
+  const navigate = item => {
+    navigation.navigate(screens.add, {
+      task: {...item, dueDate: item.dueDate.toString()},
+    });
+  };
+
   const renderItem = ({item, index}) => (
     <Box>
       <Pressable
-        onPress={() =>
-          navigation.navigate(screens.add, {
-            task: {...item, dueDate: item.dueDate.toString()},
-          })
-        }
+        onPress={() => navigate(item)}
         _dark={{
           bg: 'coolGray.800',
         }}
@@ -57,7 +59,7 @@ const TodoLists = () => {
     <HStack
       flex="1"
       pl="2"
-      my={1}
+      my={2}
       borderWidth={1}
       borderColor="gray.200"
       rounded="sm">
