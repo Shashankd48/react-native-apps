@@ -25,7 +25,7 @@ const TodoLists = () => {
     dispatch(toggleCompleteTodo(rowKey));
   };
 
-  const deleteRow = (rowMap, rowKey) => {
+  const deleteTodo = (rowMap, rowKey) => {
     closeRow(rowMap, rowKey);
     dispatch(removeTodo(rowKey));
   };
@@ -37,7 +37,11 @@ const TodoLists = () => {
   const renderItem = ({item, index}) => (
     <Box>
       <Pressable
-        onPress={() => navigation.navigate(screens.add, {task: item})}
+        onPress={() =>
+          navigation.navigate(screens.add, {
+            task: {...item, dueDate: item.dueDate.toString()},
+          })
+        }
         _dark={{
           bg: 'coolGray.800',
         }}
@@ -93,7 +97,7 @@ const TodoLists = () => {
         cursor="pointer"
         bg="red.500"
         justifyContent="center"
-        onPress={() => deleteRow(rowMap, data.item.id)}
+        onPress={() => deleteTodo(rowMap, data.item.id)}
         _pressed={{
           opacity: 0.5,
         }}

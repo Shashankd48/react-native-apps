@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import screens from '../config/screens';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import {addTodo} from '../actions/todoActions';
+import {addTodo, updateTodo} from '../actions/todoActions';
 import config from '../config';
 import {useDispatch} from 'react-redux';
 import {useNavigation, useRoute, useIsFocused} from '@react-navigation/native';
@@ -43,7 +43,6 @@ const emptyTask = {
   title: '',
   description: '',
   dueDate: '',
-  time: '',
 };
 
 function AddScreen({navigation}) {
@@ -65,24 +64,25 @@ function AddScreen({navigation}) {
     }
   }, [focused]);
 
-  const addToList = async () => {
+  const handleSubmit = async () => {
     try {
       if (task.title === '' || task.dueDate === '')
         return alert('Please add title and due date!');
 
-      const taskToAdd = {...task, id: shortid.generate(), isCompleted: false};
-
-      const storedValues = await AsyncStorage.getItem(config.store);
-      const prevList = await JSON.parse(storedValues);
-
-      dispatch(addTodo(taskToAdd));
-
-      if (!prevList) {
-        const newList = [taskToAdd];
-        await AsyncStorage.setItem(config.store, JSON.stringify(newList));
+      if (task.id) {
+        dispatch(updateTodo(task));
       } else {
-        prevList.push(taskToAdd);
-        await AsyncStorage.setItem(config.store, JSON.stringify(prevList));
+        const taskToAdd = {...task, id: shortid.generate(), isCompleted: false};
+        dispatch(addTodo(taskToAdd));
+        const storedValues = await AsyncStorage.getItem(config.store);
+        let prevList = await JSON.parse(storedValues);
+        if (!prevList) {
+          const newList = [taskToAdd];
+          await AsyncStorage.setItem(config.store, JSON.stringify(newList));
+        } else {
+          prevList = [taskToAdd, ...prevList];
+          await AsyncStorage.setItem(config.store, JSON.stringify(prevList));
+        }
       }
 
       setTask(emptyTask);
@@ -118,7 +118,7 @@ function AddScreen({navigation}) {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <Heading alignSelf="center" my="5">
-          Create New Task
+          {task.id ? 'Update Task' : 'Create New Task'}
         </Heading>
         <Box px={5}>
           <Box alignItems="center" mb={3}>
@@ -235,9 +235,9 @@ function AddScreen({navigation}) {
           </Box>
 
           <Box>
-            <Button onPress={addToList} backgroundColor="yellow.400">
+            <Button onPress={handleSubmit} backgroundColor="yellow.400">
               <Text color="gray.900" fontSize="md">
-                Add Task
+                {task.id ? 'Update Task' : 'Add Task'}
               </Text>
             </Button>
           </Box>
