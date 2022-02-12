@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, ScrollView, Pressable} from 'react-native';
 import {
   Box,
@@ -7,8 +7,6 @@ import {
   Input,
   FormControl,
   TextArea,
-  Heading,
-  VStack,
   HStack,
 } from 'native-base';
 import shortid from 'shortid';
@@ -205,7 +203,7 @@ function AddScreen({navigation}) {
             {showDateTimeModal.date && (
               <DateTimePicker
                 testID="datePicker"
-                value={task.dueDate || new Date()}
+                value={new Date(task.dueDate) || new Date()}
                 mode="date"
                 onChange={(e, selectedDate) => handleDate(selectedDate)}
                 onTouchCancel={() =>
@@ -219,7 +217,7 @@ function AddScreen({navigation}) {
             {showDateTimeModal.time && (
               <DateTimePicker
                 testID="timePicker"
-                value={task.dueDate || new Date()}
+                value={new Date(task.dueDate) || new Date()}
                 mode="time"
                 onChange={(e, selectedDate) => handleTime(selectedDate)}
                 onTouchCancel={() =>
