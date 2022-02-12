@@ -95,8 +95,12 @@ function AddScreen({navigation}) {
 
     try {
       if (task.dueDate) {
+        console.log('log: selectedDate', selectedDate.toString());
+        console.log('log: due', new Date(task.dueDate).toString());
+        const date = new Date(task.dueDate).toString().substring(0, 16);
         const time = selectedDate.toString().substr(16, task.dueDate.length);
-        const date = task.dueDate.toString().substring(0, 16);
+
+        console.log('log: New', date + time);
 
         setTask({...task, dueDate: new Date(date + time)});
       } else {
@@ -114,7 +118,9 @@ function AddScreen({navigation}) {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
         <Box p={5}>
           <Box alignItems="center" mb={3}>
             <FormControl isInvalid={false} w="100%" isRequired>
@@ -203,7 +209,7 @@ function AddScreen({navigation}) {
             {showDateTimeModal.date && (
               <DateTimePicker
                 testID="datePicker"
-                value={new Date(task.dueDate) || new Date()}
+                value={task.dueDate ? new Date(task.dueDate) : new Date()}
                 mode="date"
                 onChange={(e, selectedDate) => handleDate(selectedDate)}
                 onTouchCancel={() =>
@@ -217,7 +223,7 @@ function AddScreen({navigation}) {
             {showDateTimeModal.time && (
               <DateTimePicker
                 testID="timePicker"
-                value={new Date(task.dueDate) || new Date()}
+                value={task.dueDate ? new Date(task.dueDate) : new Date()}
                 mode="time"
                 onChange={(e, selectedDate) => handleTime(selectedDate)}
                 onTouchCancel={() =>

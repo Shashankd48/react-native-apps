@@ -1,5 +1,13 @@
 import React from 'react';
-import {Box, Pressable, HStack, VStack, Text, Icon} from 'native-base';
+import {
+  Box,
+  Pressable,
+  HStack,
+  VStack,
+  Text,
+  Icon,
+  useToast,
+} from 'native-base';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -8,11 +16,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import {removeTodo, toggleCompleteTodo} from '../actions/todoActions';
 import {useNavigation} from '@react-navigation/native';
 import screens from '../config/screens';
+import {TaskCompletedAndExpired, TaskExpired} from './ToastMessages';
 
 const TodoLists = () => {
   const todos = useSelector(state => state.todos);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const toast = useToast();
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -20,9 +30,22 @@ const TodoLists = () => {
     }
   };
 
-  const toggleTodo = (rowMap, rowKey) => {
-    closeRow(rowMap, rowKey);
-    dispatch(toggleCompleteTodo(rowKey));
+  const toggleTodo = (rowMap, item) => {
+    closeRow(rowMap, item.id);
+
+    if (new Date() <= new Date(item.dueDate))
+      dispatch(toggleCompleteTodo(item.id));
+    else {
+      toast.show({
+        render: () => {
+          return item.isCompleted ? (
+            <TaskCompletedAndExpired />
+          ) : (
+            <TaskExpired />
+          );
+        },
+      });
+    }
   };
 
   const deleteTodo = (rowMap, rowKey) => {
@@ -69,7 +92,7 @@ const TodoLists = () => {
         cursor="pointer"
         bg={data.item.isCompleted ? 'green.500' : 'coolGray.200'}
         justifyContent="center"
-        onPress={() => toggleTodo(rowMap, data.item.id)}
+        onPress={() => toggleTodo(rowMap, data.item)}
         _pressed={{
           opacity: 0.5,
         }}

@@ -7,6 +7,7 @@ import screens from '../config/screens';
 import {useDispatch, useSelector} from 'react-redux';
 import {storeTodo} from '../actions/todoActions';
 import TodoView from '../components/TodoView';
+import Loading from '../components/Loading';
 
 const styles = StyleSheet.create({
   emptyContainer: {
@@ -41,20 +42,24 @@ const styles = StyleSheet.create({
 const HomeScreen = ({navigation}) => {
   const dispatch = useDispatch();
   const todos = useSelector(state => state.todos);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getAllTask = async () => {
+      setIsLoading(true);
       const storedValues = await AsyncStorage.getItem(config.store);
       const prevList = await JSON.parse(storedValues);
+      console.log(prevList[0].dueDate);
       dispatch(storeTodo(prevList));
+      setIsLoading(false);
     };
     if (todos.length <= 0) getAllTask();
   }, [dispatch]);
 
   return (
     <View style={styles.container}>
-      <TodoView />
+      {isLoading ? <Loading /> : <TodoView />}
+
       <Fab
         renderInPortal={false}
         shadow={2}
