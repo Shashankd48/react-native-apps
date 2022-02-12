@@ -16,7 +16,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {removeTodo, toggleCompleteTodo} from '../actions/todoActions';
 import {useNavigation} from '@react-navigation/native';
 import screens from '../config/screens';
-import {TaskCompletedAndExpired, TaskExpired} from './ToastMessages';
+
+import ToastMessage from './ToastMessage';
 
 const TodoLists = () => {
   const todos = useSelector(state => state.todos);
@@ -33,17 +34,20 @@ const TodoLists = () => {
   const toggleTodo = (rowMap, item) => {
     closeRow(rowMap, item.id);
 
-    if (new Date() <= new Date(item.dueDate))
+    if (new Date() <= new Date(item.dueDate)) {
       dispatch(toggleCompleteTodo(item.id));
-    else {
+    } else {
       toast.show({
-        render: () => {
-          return item.isCompleted ? (
-            <TaskCompletedAndExpired />
-          ) : (
-            <TaskExpired />
-          );
-        },
+        render: () => (
+          <ToastMessage
+            message={
+              item.isCompleted
+                ? "Task completed and expired! can't modify now 😒"
+                : "Task expired can't modify now 😒"
+            }
+            success={item.isCompleted}
+          />
+        ),
       });
     }
   };
@@ -51,6 +55,11 @@ const TodoLists = () => {
   const deleteTodo = (rowMap, rowKey) => {
     closeRow(rowMap, rowKey);
     dispatch(removeTodo(rowKey));
+    toast.show({
+      render: () => {
+        return <ToastMessage message="Task deleted" success={false} />;
+      },
+    });
   };
 
   const onRowDidOpen = rowKey => {

@@ -8,6 +8,7 @@ import {
   FormControl,
   TextArea,
   HStack,
+  useToast,
 } from 'native-base';
 import shortid from 'shortid';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -18,6 +19,7 @@ import {addTodo, updateTodo} from '../actions/todoActions';
 import config from '../config';
 import {useDispatch} from 'react-redux';
 import {useRoute, useIsFocused} from '@react-navigation/native';
+import ToastMessage from '../components/ToastMessage';
 
 const styles = StyleSheet.create({
   container: {
@@ -52,6 +54,7 @@ function AddScreen({navigation}) {
   const dispatch = useDispatch();
   const route = useRoute();
   const focused = useIsFocused();
+  const toast = useToast();
 
   useEffect(() => {
     if (route.params) {
@@ -64,8 +67,18 @@ function AddScreen({navigation}) {
 
   const handleSubmit = async () => {
     try {
-      if (task.title === '' || task.dueDate === '')
-        return alert('Please add title and due date!');
+      if (task.title === '')
+        return toast.show({
+          render: () => (
+            <ToastMessage message="Title Required 😰" success={false} />
+          ),
+        });
+      else if (task.dueDate === '')
+        return toast.show({
+          render: () => (
+            <ToastMessage message="Due Date Required 😰" success={false} />
+          ),
+        });
 
       if (task.id) {
         dispatch(updateTodo(task));
@@ -73,10 +86,7 @@ function AddScreen({navigation}) {
         const taskToAdd = {...task, id: shortid.generate(), isCompleted: false};
         dispatch(addTodo(taskToAdd));
         const storedValues = await AsyncStorage.getItem(config.store);
-        console.log('prevList', storedValues);
-        console.log('prevList', prevList);
         let prevList = await JSON.parse(storedValues);
-        console.log('prevList', prevList);
         if (!prevList) {
           const newList = [taskToAdd];
           await AsyncStorage.setItem(config.store, JSON.stringify(newList));
