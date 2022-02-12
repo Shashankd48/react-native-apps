@@ -73,7 +73,10 @@ function AddScreen({navigation}) {
         const taskToAdd = {...task, id: shortid.generate(), isCompleted: false};
         dispatch(addTodo(taskToAdd));
         const storedValues = await AsyncStorage.getItem(config.store);
+        console.log('prevList', storedValues);
+        console.log('prevList', prevList);
         let prevList = await JSON.parse(storedValues);
+        console.log('prevList', prevList);
         if (!prevList) {
           const newList = [taskToAdd];
           await AsyncStorage.setItem(config.store, JSON.stringify(newList));

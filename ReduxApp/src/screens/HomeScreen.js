@@ -49,12 +49,16 @@ const HomeScreen = ({navigation}) => {
       setIsLoading(true);
       const storedValues = await AsyncStorage.getItem(config.store);
       const prevList = await JSON.parse(storedValues);
-      console.log(prevList[0].dueDate);
       dispatch(storeTodo(prevList));
       setIsLoading(false);
     };
-    if (todos.length <= 0) getAllTask();
+
+    if (todos?.length <= 0) getAllTask();
   }, [dispatch]);
+
+  useEffect(() => {
+    console.log('log: todos', todos);
+  }, [todos]);
 
   return (
     <View style={styles.container}>

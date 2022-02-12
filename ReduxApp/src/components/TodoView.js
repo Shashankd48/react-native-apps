@@ -13,7 +13,7 @@ function TodoView() {
   });
 
   useEffect(() => {
-    if (todos.length) {
+    if (todos?.length) {
       let pending = 0;
       let expired = 0;
       let completed = 0;
@@ -68,7 +68,7 @@ function TodoView() {
           </Box>
         </Box>
 
-        {todos.length > 0 ? <TodoLists /> : <NoTodoFound />}
+        {todos?.length > 0 ? <TodoLists /> : <NoTodoFound />}
       </Box>
     </Center>
   );
