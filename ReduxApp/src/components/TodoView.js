@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Box, Center, Heading, HStack, Text} from 'native-base';
 import TodoLists from './TodoLists';
 import {useSelector} from 'react-redux';
+import NoTodoFound from './NoTodoFound';
 
 function TodoView() {
   const todos = useSelector(state => state.todos);
@@ -67,7 +68,7 @@ function TodoView() {
           </Box>
         </Box>
 
-        <TodoLists />
+        {todos.length > 0 ? <TodoLists /> : <NoTodoFound />}
       </Box>
     </Center>
   );
