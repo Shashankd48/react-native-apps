@@ -82,15 +82,34 @@ function AddScreen({navigation}) {
 
       if (task.id) {
         dispatch(updateTodo(task));
+        toast.show({
+          render: () => (
+            <ToastMessage message="Task updated 😁" success={true} />
+          ),
+        });
       } else {
         const taskToAdd = {...task, id: shortid.generate(), isCompleted: false};
         dispatch(addTodo(taskToAdd));
         const storedValues = await AsyncStorage.getItem(config.store);
         let prevList = await JSON.parse(storedValues);
-        if (!prevList) {
+        console.log(prevList);
+        if (!prevList || prevList.length <= 0) {
+          toast.show({
+            render: () => (
+              <ToastMessage
+                message="🎉 Congratulations on 1st task 🎉"
+                success={true}
+              />
+            ),
+          });
           const newList = [taskToAdd];
           await AsyncStorage.setItem(config.store, JSON.stringify(newList));
         } else {
+          toast.show({
+            render: () => (
+              <ToastMessage message="New task added 👍" success={true} />
+            ),
+          });
           prevList = [taskToAdd, ...prevList];
           await AsyncStorage.setItem(config.store, JSON.stringify(prevList));
         }
