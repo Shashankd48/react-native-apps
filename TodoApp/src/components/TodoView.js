@@ -4,13 +4,15 @@ import TodoLists from './TodoLists';
 import {useSelector} from 'react-redux';
 import NoTodoFound from './NoTodoFound';
 
+const emptyTaskStatus = {
+  pending: 0,
+  expired: 0,
+  completed: 0,
+};
+
 function TodoView() {
   const todos = useSelector(state => state.todos);
-  const [taskStatus, setTaskStatus] = useState({
-    pending: 0,
-    expired: 0,
-    completed: 0,
-  });
+  const [taskStatus, setTaskStatus] = useState(emptyTaskStatus);
 
   useEffect(() => {
     if (todos?.length) {
@@ -23,6 +25,8 @@ function TodoView() {
         else pending++;
       });
       setTaskStatus({pending, expired, completed});
+    } else {
+      setTaskStatus(emptyTaskStatus);
     }
   }, [todos]);
 
