@@ -3,7 +3,7 @@
  * https://github.com/facebook/react-native
  *
  * @format
- * @flow strict-local
+ * @flow strict-local a
  */
 
 import {NavigationContainer} from '@react-navigation/native';
